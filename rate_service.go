@@ -41,7 +41,7 @@ func (s *RateService) setRate(rate *RateRecord) (error) {
 		log.Warning("Creating first rate for %s%s", rate.FromCode, rate.ToCode)
 		return s.db.SaveRate(rate)
 	}
-	log.Info("Found exterior")
+	log.Debug("Found exterior")
 	next := s.db.FindFollowing(exterior)
 	exterior.End = rate.Beginning
 	err := s.db.UpdateRate(exterior)
@@ -51,7 +51,7 @@ func (s *RateService) setRate(rate *RateRecord) (error) {
 
 	if next == nil {
 		rate.End = s.MAX_TIME
-		log.Info("Set last rate for %s%s", rate.FromCode, rate.ToCode)
+		log.Info("Wrote last rate for %s%s", rate.FromCode, rate.ToCode)
 		return s.db.SaveRate(rate)
 	}
 
@@ -61,6 +61,6 @@ func (s *RateService) setRate(rate *RateRecord) (error) {
 		return err
 	}
 
-	log.Info("Set intermediate rate for %s%s", rate.FromCode, rate.ToCode)
+	log.Info("Wrote intermediate rate for %s%s", rate.FromCode, rate.ToCode)
 	return s.db.SaveRate(rate)
 }

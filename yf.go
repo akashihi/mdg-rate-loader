@@ -62,7 +62,7 @@ func getRate(rate *RateRecord) (*RateRecord){
 		return nil
 	}
 
-	log.Info("Rate for %s%s pair is %s", rate.FromCode, rate.ToCode, rate.Rate.String())
+	log.Notice("Rate for %s%s pair is %s", rate.FromCode, rate.ToCode, rate.Rate.String())
 	return rate
 }
 

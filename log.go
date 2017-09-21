@@ -14,4 +14,5 @@ func InitLog() {
 	backend := logging.NewLogBackend(os.Stdout, "", 0)
 	backendFormatter := logging.NewBackendFormatter(backend, format)
 	logging.SetBackend(backendFormatter)
+	logging.SetLevel(logging.INFO, "mdg-rate-loader")
 }
