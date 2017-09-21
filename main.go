@@ -4,7 +4,9 @@ func main() {
 	InitLog()
 	log.Notice("Starting mdg currency rate loader...")
 
-	db := newDbInterface()
+	configuration := config()
+
+	db := newDbInterface(configuration)
 	defer db.Close()
 	service := newRateService(db)
 

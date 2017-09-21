@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -14,8 +15,10 @@ type DbInterface struct {
 
 // Prepares database for access.
 // Quite limited in tuning
-func newDbInterface() *DbInterface {
-	db, err := gorm.Open("postgres", "host=localhost user=mdg dbname=mdg sslmode=disable password=mdg")
+func newDbInterface(configuration Configuration) *DbInterface {
+	dbUrl := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", configuration.Host, configuration.User, configuration.Database, configuration.Password)
+
+	db, err := gorm.Open("postgres", dbUrl)
 	if err != nil {
 		log.Fatalf("Failed to connect database: %v", err)
 		os.Exit(1)
@@ -52,7 +55,7 @@ func (dbintf *DbInterface) FindExterior(rate *RateRecord) (*RateRecord) {
 // Retrieve following Rate
 func (dbintf *DbInterface) FindFollowing(rate *RateRecord) (*RateRecord) {
 	var following []RateRecord
-	dbintf.db.Where("rate_beginning >= ? and from_id = ? and to_id = ?",rate.End, rate.From, rate.To).First(&following)
+	dbintf.db.Where("rate_beginning >= ? and from_id = ? and to_id = ?", rate.End, rate.From, rate.To).First(&following)
 	if len(following) == 0 {
 		return nil
 	}
