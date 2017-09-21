@@ -1,15 +1,8 @@
 package main
 
-func main() {
-	InitLog()
-	log.Notice("Starting mdg currency rate loader...")
+import "time"
 
-	configuration := config()
-
-	db := newDbInterface(configuration)
-	defer db.Close()
-	service := newRateService(db)
-
+func serve(db *DbInterface, service *RateService) {
 	currencies, err := db.ListCurrencies()
 	if err != nil {
 		log.Error("Can't load currency list: %v", err)
@@ -27,5 +20,22 @@ func main() {
 				service.store(newRate)
 			}
 		}
+	}
+}
+
+func main() {
+	InitLog()
+	log.Notice("Starting mdg currency rate loader...")
+
+	configuration := config()
+
+	db := newDbInterface(configuration)
+	defer db.Close()
+	service := newRateService(db)
+
+	for {
+		serve(db, service)
+		log.Info("Sleeping for %d minutes", configuration.Period)
+		time.Sleep(time.Minute*time.Duration(configuration.Period))
 	}
 }
