@@ -63,5 +63,4 @@ func (s *RateService) setRate(rate *RateRecord) (error) {
 
 	log.Info("Set intermediate rate for %s%s", rate.FromCode, rate.ToCode)
 	return s.db.SaveRate(rate)
-	return nil
 }
