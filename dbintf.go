@@ -39,3 +39,32 @@ func (dbintf *DbInterface) ListCurrencies() ([]CurrencyRecord, error) {
 	return currencies, err
 }
 
+// Retrieve exterior Rate
+func (dbintf *DbInterface) FindExterior(rate *RateRecord) (*RateRecord) {
+	var exterior []RateRecord
+	dbintf.db.Where("rate_beginning <= ? and rate_end > ? and from_id = ? and to_id = ?", rate.Beginning, rate.End, rate.From, rate.To).First(&exterior)
+	if len(exterior) == 0 {
+		return nil
+	}
+	return &exterior[0]
+}
+
+// Retrieve following Rate
+func (dbintf *DbInterface) FindFollowing(rate *RateRecord) (*RateRecord) {
+	var following []RateRecord
+	dbintf.db.Where("rate_beginning >= ? and from_id = ? and to_id = ?",rate.End, rate.From, rate.To).First(&following)
+	if len(following) == 0 {
+		return nil
+	}
+	return &following[0]
+}
+
+// Saves rate entity to the database
+func (dbintf *DbInterface) SaveRate(rate *RateRecord) (error) {
+	return dbintf.db.Create(rate).Error
+}
+
+// Updates rate entity in the database
+func (dbintf *DbInterface) UpdateRate(rate *RateRecord) (error) {
+	return dbintf.db.Update(rate).Error
+}
