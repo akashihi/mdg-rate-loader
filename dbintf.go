@@ -66,5 +66,5 @@ func (dbintf *DbInterface) SaveRate(rate *RateRecord) (error) {
 
 // Updates rate entity in the database
 func (dbintf *DbInterface) UpdateRate(rate *RateRecord) (error) {
-	return dbintf.db.Update(rate).Error
+	return dbintf.db.Save(rate).Error
 }
