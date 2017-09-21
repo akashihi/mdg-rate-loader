@@ -20,7 +20,7 @@ func getRate(rate *RateRecord) (*RateRecord){
 
 	u, err := url.Parse("https://query1.finance.yahoo.com/v7/finance/spark?range=1d&interval=60m&indicators=close&includeTimestamps=true&includePrePost=false&corsDomain=finance.yahoo.com&.tsrc=finance")
 	if err != nil {
-		log.Warning("Unable to construct UahooFinance url: %v", err)
+		log.Warning("Unable to construct YahooFinance url: %v", err)
 		return nil
 	}
 	q := u.Query()
