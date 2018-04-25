@@ -56,6 +56,10 @@ func getRate(rate *RateRecord) (*RateRecord){
 		}
 	}
 
+	if (len(rates) == 0) {
+		log.Warning("No rates returned for %s pair", pair)
+		return nil
+	}
 	rate.Rate, err = decimal.NewFromString(rates[len(rates)-1])
 	if err != nil {
 		log.Warning("Unable to parse rate value: %v", err)
