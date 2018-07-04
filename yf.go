@@ -30,7 +30,8 @@ func getRate(rate *RateRecord) (*RateRecord){
 
 	response, err := netClient.Get(u.String())
 	if err != nil {
-		log.Warning("Unable to retrieve ")
+		log.Warning("Unable to retrieve: %v ", err)
+		return nil
 	}
 
 	ratePath := "$.spark.result[0].response[0].indicators.quote[0].close[*]+"
