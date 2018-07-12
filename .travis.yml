@@ -1,8 +1,21 @@
 dist: trusty
 language: go
 go:
-- "1.8"
+- '1.8'
 services:
 - docker
 script:
 - go build -v
+before_deploy:
+- cp mdg-rate-loader docker/
+- cd docker
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: bash docker_build.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST_BRANCH $TRAVIS_TAG
+  on:
+    all_branches: true
+env:
+  global:
+  - DOCKER_USERNAME=akashihi
+  - secure: Flkl8kk8vH504w5XkBUDPm1zAIF/COFHNt0fj/9XbF4c7w0OdiPWcSgb49ToUWxmf9ZgbIVkQ2/HzdWwRMIFlT+FFGGcs4kE5reXmdd+Y4jgl/1ukJtVynA8+hhlgU94T7MIF9ZtGNJ5Ma/im7qukqGoFnul4scPUIeaksSlbdcAYkxokXDzj+iEAfztJj513M7HHK89mydbKZcwTd4COAEy109q+M/qh843SdfNVXI7IodOnV7RFa+AhpFEK/yLgKz+Z8cbUDxIanqntCh78DHbNvySmXDU3hDjYHAHQfWGBNi8C5b7UPlUs3a0PXj3ha0dvL9WGLZKI8QQ7wFdUF1uTERsyr3+4VPMwVFro2tRSvH7irmAbrzq5ZSvs9Ds8tds3Ve6+xQ6fVYo++/Y8vfcY+Qs/TBS39Qi4YU6WJjCcpPtyV5yw47EX1LDTzZAhPI/kSrphrnqGJT7SrmJesxkUl3rJBhmXwO/7fcOTuwGj0w/6KNNRq+WDNrbY03/i6Ot+G26W4uty68w8crzrZT96gKTDHmrBHyvhm4a/yp/xpbv5LzU/3qFq/kScjGGg/KNgqaMxi54OziKJyq9F1hgo63IeOxoForRXvK2ptPbZfx9K38ZIJx9MKiXIfTzU3n91wR3H+32cL+MAcMDmFSK5G0A/uD7kvOqOJ8B9Ng=
