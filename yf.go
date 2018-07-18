@@ -16,11 +16,11 @@ func getRate(rate *RateRecord) (*RateRecord){
 	}
 
 	pair := fmt.Sprintf("%s%s=X", rate.FromCode, rate.ToCode)
-	log.Debug("Loading rate for %s pair", pair)
+	log.Debugf("Loading rate for %s pair", pair)
 
 	u, err := url.Parse("https://query1.finance.yahoo.com/v7/finance/spark?range=1d&interval=60m&indicators=close&includeTimestamps=true&includePrePost=false&corsDomain=finance.yahoo.com&.tsrc=finance")
 	if err != nil {
-		log.Warning("Unable to construct YahooFinance url: %v", err)
+		log.Warningf("Unable to construct YahooFinance url: %v", err)
 		return nil
 	}
 	q := u.Query()
@@ -30,19 +30,19 @@ func getRate(rate *RateRecord) (*RateRecord){
 
 	response, err := netClient.Get(u.String())
 	if err != nil {
-		log.Warning("Unable to retrieve: %v ", err)
+		log.Warningf("Unable to retrieve: %v ", err)
 		return nil
 	}
 
 	ratePath := "$.spark.result[0].response[0].indicators.quote[0].close[*]+"
 	paths, err := jsonpath.ParsePaths(ratePath)
 	if err != nil {
-		log.Critical("Invalid JsonPath: %v", err)
+		log.Criticalf("Invalid JsonPath: %v", err)
 		return nil
 	}
 	eval, err := jsonpath.EvalPathsInReader(response.Body, paths)
 	if err != nil {
-		log.Warning("Unable to parse YahooFinance json: %v", err)
+		log.Warningf("Unable to parse YahooFinance json: %v", err)
 		return nil
 	}
 	var rates []string
@@ -58,16 +58,16 @@ func getRate(rate *RateRecord) (*RateRecord){
 	}
 
 	if (len(rates) == 0) {
-		log.Warning("No rates returned for %s pair", pair)
+		log.Warningf("No rates returned for %s pair", pair)
 		return nil
 	}
 	rate.Rate, err = decimal.NewFromString(rates[len(rates)-1])
 	if err != nil {
-		log.Warning("Unable to parse rate value: %v", err)
+		log.Warningf("Unable to parse rate value: %v", err)
 		return nil
 	}
 
-	log.Notice("Rate for %s%s pair is %s", rate.FromCode, rate.ToCode, rate.Rate.String())
+	log.Noticef("Rate for %s%s pair is %s", rate.FromCode, rate.ToCode, rate.Rate.String())
 	return rate
 }
 

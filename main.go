@@ -5,11 +5,11 @@ import "time"
 func serve(db *DbInterface, service *RateService) {
 	currencies, err := db.ListCurrencies()
 	if err != nil {
-		log.Error("Can't load currency list: %v", err)
+		log.Errorf("Can't load currency list: %v", err)
 	}
 
 	for _, currency := range currencies {
-		log.Debug("Loaded currency %d with code %s", currency.Id, currency.Code)
+		log.Debugf("Loaded currency %d with code %s", currency.Id, currency.Code)
 		for _, pair := range currencies {
 			if pair == currency {
 				continue
@@ -35,7 +35,7 @@ func main() {
 
 	for {
 		serve(db, service)
-		log.Info("Sleeping for %d minutes", configuration.Period)
+		log.Infof("Sleeping for %d minutes", configuration.Period)
 		time.Sleep(time.Minute*time.Duration(configuration.Period))
 	}
 }
