@@ -18,11 +18,11 @@ func newRateService(dbintf *DbInterface) (*RateService) {
 }
 
 func (s *RateService) store(rate *RateRecord) {
-	log.Debug("Storing rate %s%s", rate.FromCode, rate.ToCode)
+	log.Debugf("Storing rate %s%s", rate.FromCode, rate.ToCode)
 	tx := s.db.db.Begin()
 	err := s.setRate(rate)
 	if err != nil {
-		log.Error("Unable to store %s%s rate: %v", rate.FromCode, rate.ToCode, err)
+		log.Errorf("Unable to store %s%s rate: %v", rate.FromCode, rate.ToCode, err)
 		tx.Rollback()
 		return
 	}
@@ -38,10 +38,10 @@ func (s *RateService) setRate(rate *RateRecord) (error) {
 		//First rate ever
 		rate.Beginning = s.MIN_TIME
 		rate.End = s.MAX_TIME
-		log.Warning("Creating first rate for %s%s", rate.FromCode, rate.ToCode)
+		log.Warningf("Creating first rate for %s%s", rate.FromCode, rate.ToCode)
 		return s.db.SaveRate(rate)
 	}
-	log.Debug("Found exterior")
+	log.Debugf("Found exterior")
 	next := s.db.FindFollowing(exterior)
 	exterior.End = rate.Beginning
 	err := s.db.UpdateRate(exterior)
@@ -51,7 +51,7 @@ func (s *RateService) setRate(rate *RateRecord) (error) {
 
 	if next == nil {
 		rate.End = s.MAX_TIME
-		log.Info("Wrote last rate for %s%s", rate.FromCode, rate.ToCode)
+		log.Infof("Wrote last rate for %s%s", rate.FromCode, rate.ToCode)
 		return s.db.SaveRate(rate)
 	}
 
@@ -61,6 +61,6 @@ func (s *RateService) setRate(rate *RateRecord) (error) {
 		return err
 	}
 
-	log.Info("Wrote intermediate rate for %s%s", rate.FromCode, rate.ToCode)
+	log.Infof("Wrote intermediate rate for %s%s", rate.FromCode, rate.ToCode)
 	return s.db.SaveRate(rate)
 }
