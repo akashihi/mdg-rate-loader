@@ -38,7 +38,7 @@ func (dbintf *DbInterface) Close() {
 // Retrieves list of currencies
 func (dbintf *DbInterface) ListCurrencies() ([]CurrencyRecord, error) {
 	var currencies []CurrencyRecord
-	err := dbintf.db.Find(&currencies).Error
+	err := dbintf.db.Where("active='t'").Find(&currencies).Error
 	return currencies, err
 }
 
